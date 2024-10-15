@@ -33,7 +33,7 @@ define Image/BuildKernel/FIT
 	$(CP) $(KDIR)/Image $(BIN_DIR)/$(IMG_PREFIX)-vmlinux.bin
 	gzip -9 -c $(KDIR)/Image > $(KDIR)/Image.gz
 	$(call CompressLzma,$(KDIR)/Image,$(KDIR)/Image.lzma)
-	$(call Image/BuildKernel/MkFIT,$(1), $(KDIR)/Image.lzma, $(DTS_DIR)/$(1).dtb,lzma,$(2),$(2))
+	$(call Image/BuildKernel/MkFIT,$(1), $(KDIR)/Image.gz, $(DTS_DIR)/$(1).dtb,gzip,$(2),$(2))
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
 	mkdir -p $(BIN_DIR)/dtbs/
 	$(CP) $(DTS_DIR)/ipq60*.dtb $(BIN_DIR)/dtbs/
@@ -56,7 +56,7 @@ define Image/BuildKernel/MultiDTBFIT
 	gzip -9 -c $(KDIR)/Image > $(KDIR)/Image.gz
 	$(foreach dtb, $(2), gzip -9 -c $(DTS_DIR)/$(dtb).dtb > $(DTS_DIR)/$(dtb).dtb.gz;)
 	$(call CompressLzma,$(KDIR)/Image,$(KDIR)/Image.lzma)
-	$(call Image/BuildKernel/MkFITMulti,$(1),$(KDIR)/Image.lzma,$(2),lzma,$(3),$(3),$(4),$(5))
+	$(call Image/BuildKernel/MkFITMulti,$(1),$(KDIR)/Image.gz,$(2),gzip,$(3),$(3),$(4),$(5))
 	$$(if $$(CONFIG_DEBUG), ,$$(call sizecheck, $(IPQ60XX_KERNEL_SIZE), $(KDIR)/fit-$(1).itb))
 	$(CP) $(KDIR)/fit-$(1).itb $(BIN_DIR)/$(IMG_PREFIX)-$(1)-fit-uImage.itb
 endef
